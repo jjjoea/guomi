@@ -771,6 +771,7 @@ public class UI extends JFrame
     	ActionListener ECB_C = new ActionListener() {
     		public void actionPerformed(ActionEvent evt) {
     			label1.setVisible(true);
+    			label2.setVisible(false);
     	    	output.setVisible(true);
     			String plainText = textarea.getText();
     			SM4Utils sm4 = new SM4Utils();
@@ -788,6 +789,7 @@ public class UI extends JFrame
     	ActionListener CBC_C = new ActionListener() {
     		public void actionPerformed(ActionEvent evt) {
     			label1.setVisible(true);
+    			label2.setVisible(false);
     	    	output.setVisible(true);
     			String plainText = textarea.getText();
     			SM4Utils sm4 = new SM4Utils();
@@ -802,6 +804,7 @@ public class UI extends JFrame
     	//ECB模式解密
     	ActionListener ECB_E = new ActionListener() {
     		public void actionPerformed(ActionEvent evt) {
+    			label1.setVisible(false);
     			label2.setVisible(true);
     	    	output.setVisible(true);
     			String plainText = textarea.getText();
@@ -816,6 +819,7 @@ public class UI extends JFrame
     	//CBC模式解密
     	ActionListener CBC_E = new ActionListener() {
     		public void actionPerformed(ActionEvent evt) {
+    			label1.setVisible(false);
     			label2.setVisible(true);
     	    	output.setVisible(true);
     			String plainText = textarea.getText();
