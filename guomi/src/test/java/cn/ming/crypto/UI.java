@@ -21,7 +21,7 @@ public class UI extends JFrame
   
     public UI()  
     {  
-        super("国密算法小程序"); setSize(450,700);  
+        super("国密算法小程序"); setSize(450,750);  
   
         Container c = getContentPane();  
         tabbedPane=new JTabbedPane();   //创建选项卡面板对象  
@@ -80,10 +80,15 @@ public class UI extends JFrame
 		final JLabel label5 = new JLabel("数字签名:");
 		final JLabel label6 = new JLabel("数字签名:");
 		final JLabel label7 = new JLabel("验证结果:");
+		final JLabel label8 = new JLabel("公钥路径:");
+		final JLabel label9 = new JLabel("私钥路径:");
     	final JTextArea textarea1 = new JTextArea(10,35);
     	final JTextArea textarea2 = new JTextArea(10,35);
     	final JTextArea textarea3 = new JTextArea(10,35);
     	final JTextArea textarea4 = new JTextArea(10,35);
+    	final JTextArea textarea5 = new JTextArea(2,35);
+    	final JTextArea textarea6 = new JTextArea(2,35);
+    	
     	textarea1.setLineWrap(true);
     	textarea2.setLineWrap(true);
     	textarea3.setLineWrap(true);
@@ -95,6 +100,10 @@ public class UI extends JFrame
         panel1.add(button3);
         panel1.add(button4);
         panel1.add(button5);
+        panel1.add(label8);
+        panel1.add(textarea5);
+        panel1.add(label9);
+        panel1.add(textarea6);      
         panel1.add(label1);
         panel1.add(textarea1);
         panel1.add(label4);
@@ -130,6 +139,8 @@ public class UI extends JFrame
     	textarea2.setVisible(false);
     	textarea3.setVisible(false);
     	textarea4.setVisible(false);
+    	textarea5.setVisible(false);
+    	textarea6.setVisible(false);
     	label1.setVisible(false);
     	label2.setVisible(false);
     	label3.setVisible(false);
@@ -137,6 +148,8 @@ public class UI extends JFrame
     	label5.setVisible(false);
     	label6.setVisible(false);
     	label7.setVisible(false);
+    	label8.setVisible(false);
+    	label9.setVisible(false);
     	
     	//选择加密
     	ActionListener C = new ActionListener() {
@@ -164,11 +177,17 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
+    	    	label8.setVisible(true);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(true);
+    	    	textarea6.setVisible(false);
     	    	
     	    	textarea1.setText("");
     	    	textarea2.setText("");
     	    	textarea3.setText("");
     	    	textarea4.setText("");
+    	    	textarea5.setText("");
+    	    	textarea6.setText("");
     	    }
     	};
     	button1.addActionListener(C);
@@ -199,11 +218,18 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
+    	    	label8.setVisible(true);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(true);
+    	    	textarea6.setVisible(false);
     	    	
     	    	SM2 sm02 = new SM2();
     			/* 也可以从文件导入密钥对 */
-    			ECPoint pubKey = sm02.importPublicKey("publickey.pem");
-    			BigInteger privKey = sm02.importPrivateKey("privatekey.pem");
+    	    	String path = textarea5.getText();
+    	    	System.out.println("公钥路径:\n" + path);
+    			ECPoint pubKey = sm02.importPublicKey(path);
+    			String rb = SM2.getHexString(pubKey.getRawXCoord().getEncoded());
+    			System.out.println("私钥:\n" + rb);
     			/* 加密 */
     			String plainText = textarea1.getText();
     			byte[] data = sm02.encrypt(plainText, pubKey);  			
@@ -240,11 +266,17 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
+    	    	label8.setVisible(false);
+    	    	label9.setVisible(true);
+    	    	textarea5.setVisible(false);
+    	    	textarea6.setVisible(true);
     	    	
     	    	textarea1.setText("");
     	    	textarea2.setText("");  	    	
     	    	textarea3.setText("");
     	    	textarea4.setText("");
+    	    	textarea5.setText("");
+    	    	textarea6.setText("");
     	    }
     	};
     	button2.addActionListener(D);
@@ -275,14 +307,18 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
+    	    	label8.setVisible(false);
+    	    	label9.setVisible(true);
+    	    	textarea5.setVisible(false);
+    	    	textarea6.setVisible(true);
     	    	
     	    	String data = textarea1.getText();
     	    	
     	    	byte[] ciphertext=SM2.hexStringToBytes(data);
     	    	SM2 sm02 = new SM2();
     			/* 也可以从文件导入密钥对 */
-    			ECPoint pubKey = sm02.importPublicKey("publickey.pem");
-    			BigInteger privKey = sm02.importPrivateKey("privatekey.pem");
+    			String path = textarea6.getText();
+    			BigInteger privKey = sm02.importPrivateKey(path);
     			/* 解密 */
     			String plainText = sm02.decrypt(ciphertext, privKey);
     			textarea2.setText(plainText);
@@ -317,11 +353,17 @@ public class UI extends JFrame
     	    	label5.setVisible(true);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
+    	    	label8.setVisible(true);
+    	    	label9.setVisible(true);
+    	    	textarea5.setVisible(true);
+    	    	textarea6.setVisible(true);
     	    	
     	    	textarea1.setText("");
     	    	textarea2.setText("");
     	    	textarea3.setText("");
     	    	textarea4.setText("");
+    	    	textarea5.setText("");
+    	    	textarea6.setText("");
     	    }
     	};
     	button3.addActionListener(E);
@@ -352,17 +394,18 @@ public class UI extends JFrame
     	    	label5.setVisible(true);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
-    	    	
-//    	    	textarea1.setText("");
-//    	    	textarea2.setText("");
-//    	    	textarea3.setText("");
-//    	    	textarea4.setText("");
-    	    	
+    	    	label8.setVisible(true);
+    	    	label9.setVisible(true);
+    	    	textarea5.setVisible(true);
+    	    	textarea6.setVisible(true);
+    	    		    	
     			SM2 sm02 = new SM2();
 
     			/* 也可以从文件导入密钥对 */
-    			ECPoint pubKey = sm02.importPublicKey("publickey.pem");
-    			BigInteger privKey = sm02.importPrivateKey("privatekey.pem");
+    			String pubPath = textarea5.getText();
+    			String priPath = textarea6.getText();
+    			ECPoint pubKey = sm02.importPublicKey(pubPath);
+    			BigInteger privKey = sm02.importPrivateKey(priPath);
     			//System.out.println("私钥:\n" + privKey.toString(16));
     			
 //----------------------------------获取用户输入的IDA与待签名的消息M------------------------------------------//
@@ -414,11 +457,17 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(true);
     	    	label7.setVisible(true);
+    	    	label8.setVisible(true);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(true);
+    	    	textarea6.setVisible(false);
     	    	
     	    	textarea1.setText("");
     	    	textarea2.setText("");
     	    	textarea3.setText("");
-    	    	textarea4.setText("");    	    	
+    	    	textarea4.setText(""); 
+    	    	textarea5.setText("");
+    	    	textarea6.setText("");
   	    	
     	    }
     	};
@@ -450,13 +499,17 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(true);
     	    	label7.setVisible(true);
+    	    	label8.setVisible(true);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(true);
+    	    	textarea6.setVisible(false);
     	    	
     	    	
     	    	SM2 sm02 = new SM2();
     			
     			/* 也可以从文件导入密钥对 */
-    			ECPoint pubKey = sm02.importPublicKey("publickey.pem");
-    			BigInteger privKey = sm02.importPrivateKey("privatekey.pem");
+    	    	String pubPath = textarea5.getText();
+    			ECPoint pubKey = sm02.importPublicKey(pubPath);
 
 //---------------------获取用户输入的待验证消息M、用户标识IDA、待验证签名信息signature1--------------------------//
     			String M = textarea1.getText();
@@ -488,7 +541,6 @@ public class UI extends JFrame
     			System.out.println("数字签名:" + signature);
     			System.out.println("验证签名:" + sm02.verify(M, signature, IDA, pubKey));
     			
-//----------------------假设最终验证结果为flag，我这里先假设是true，将其写到结果框中--------------------------//
     			if (sm02.verify(M, signature, IDA, pubKey)) {
         			String flag = "true";
         			textarea2.setText(flag);
@@ -520,6 +572,10 @@ public class UI extends JFrame
     	    	button12.setVisible(true);
     	    	textarea1.setVisible(true);
     	    	textarea2.setVisible(true);
+    	    	label8.setVisible(false);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(false);
+    	    	textarea6.setVisible(false);
     	    	
     	    	textarea1.setText("");
     	    	textarea2.setText("");
@@ -544,6 +600,10 @@ public class UI extends JFrame
     	    	button11.setVisible(false);
     	    	textarea1.setVisible(true);
     	    	textarea2.setVisible(true);
+    	    	label8.setVisible(false);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(false);
+    	    	textarea6.setVisible(false);
     	    	
     	    	textarea1.setText("我是用户A\r\n");
     	    	textarea2.setText("我是用户B\r\n");
@@ -596,6 +656,8 @@ public class UI extends JFrame
     			textarea2.setText("");
     			textarea3.setText("");
     			textarea4.setText("");
+    			textarea5.setText("");
+    			textarea6.setText("");
     	    }
     	};
     	button8.addActionListener(clean);
@@ -626,6 +688,10 @@ public class UI extends JFrame
     	    	label5.setVisible(false);
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
+    	    	label8.setVisible(false);
+    	    	label9.setVisible(false);
+    	    	textarea5.setVisible(false);
+    	    	textarea6.setVisible(false);
     	    }
     	};
     	button9.addActionListener(RESM2);
