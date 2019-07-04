@@ -352,10 +352,10 @@ public class UI extends JFrame
     	    	label6.setVisible(false);
     	    	label7.setVisible(false);
     	    	
-    	    	textarea1.setText("");
-    	    	textarea2.setText("");
-    	    	textarea3.setText("");
-    	    	textarea4.setText("");
+//    	    	textarea1.setText("");
+//    	    	textarea2.setText("");
+//    	    	textarea3.setText("");
+//    	    	textarea4.setText("");
     	    	
     			SM2 sm02 = new SM2();
 
@@ -366,25 +366,23 @@ public class UI extends JFrame
     			//System.out.println("私钥:\n" + privKey.toString(16));
     			
 //----------------------------------获取用户输入的IDA与待签名的消息M------------------------------------------//
-//   			String IDA = "hanming";
+
     			String IDA = textarea3.getText();
-//    			String M = "Hello World";
     			String M = textarea1.getText();
-    			//System.out.println("要签名的信息为：" + M);
 
     			Signature signature = sm02.sign(M, IDA, new SM2KeyPair(pubKey, privKey));
 
     			//System.out.println("用户标识:" + signature.r.toString(16));
     			//System.out.println("用户标识:" + signature.r.toString(16));
-    			String sign=IDA+"("+signature.r.toString(16)+","+signature.s.toString(16)+")";
+    			String sign=IDA + ",(" + signature.r.toString(16).toUpperCase() + "," + signature.s.toString(16).toUpperCase() + ")" ;
     			
 //------------------------------将签名信息写到结果文本框中---------------------------------------------------//
     			textarea2.setText(sign);
-    			
-
-    			//System.out.println("用户标识:" + IDA);
-    			//System.out.println("签名信息:" + M);
-    			//System.out.println("数字签名:" + signature);			
+//    			
+//
+//    			System.out.println("用户标识:" + IDA);
+//    			System.out.println("签名信息:" + M);
+//    			System.out.println("数字签名:" + signature);			
     	    	
     	    }
     	};
@@ -453,34 +451,52 @@ public class UI extends JFrame
     	    	label6.setVisible(true);
     	    	label7.setVisible(true);
     	    	
-    	    	textarea1.setText("");
-    	    	textarea2.setText("");
-    	    	textarea3.setText("");
-    	    	textarea4.setText("");
     	    	
-    			SM2 sm02 = new SM2();
+    	    	SM2 sm02 = new SM2();
     			
     			/* 也可以从文件导入密钥对 */
     			ECPoint pubKey = sm02.importPublicKey("publickey.pem");
     			BigInteger privKey = sm02.importPrivateKey("privatekey.pem");
 
-    			//String IDA = "hanming";
-    			//String M = "Hello World";
-    			//System.out.println("要签名的信息为：" + M);
 //---------------------获取用户输入的待验证消息M、用户标识IDA、待验证签名信息signature1--------------------------//
     			String M = textarea1.getText();
     			String IDA = textarea3.getText();
-    			String signature1 = textarea4.getText();
+    			String signTemp = textarea4.getText();
+    			
+    			//String signTemp="(7caa05f622db19cf1151d3bcd645a581386a08d31d5e6e70f3b9c228589bb4cb,576d66f0e0120d88a05099e0de757e07688f71f1e5da4e883a45f9191d35074)";
+    			signTemp = signTemp.replace("(", "");
+    			signTemp = signTemp.replace(")", "");
+    			
+    			String signRS[]=signTemp.split(",");
+    			
+    			System.out.println(signRS[0]);
+    			BigInteger r = new BigInteger(signRS[0], 16);
+    			BigInteger s = new BigInteger(signRS[1], 16);
+    			
 
-    			Signature signature = sm02.sign(M, IDA, new SM2KeyPair(pubKey, privKey));
-    			//System.out.println("用户标识:" + IDA);
-    			//System.out.println("签名信息:" + M);
-    			//System.out.println("数字签名:" + signature);
-    			//System.out.println("验证签名:" + sm02.verify(M, signature, IDA, pubKey));
+
+    			Signature signature  = new Signature(r,s);
+    			
+    			System.out.println("验证签名:" + sm02.verify(M, signature, IDA, pubKey));
+    			
+    			 
+    			
+    			//sm02.verify(M, signature, IDA, publicKey));
+    			
+    			System.out.println("用户标识:" + IDA);
+    			System.out.println("签名信息:" + M);
+    			System.out.println("数字签名:" + signature);
+    			System.out.println("验证签名:" + sm02.verify(M, signature, IDA, pubKey));
     			
 //----------------------假设最终验证结果为flag，我这里先假设是true，将其写到结果框中--------------------------//
-    			String flag = "true";
-    			textarea2.setText(flag);
+    			if (sm02.verify(M, signature, IDA, pubKey)) {
+        			String flag = "true";
+        			textarea2.setText(flag);
+    			}
+    			else {
+        			String flag = "false";
+        			textarea2.setText(flag);
+				}
   
     	    }
     	};
