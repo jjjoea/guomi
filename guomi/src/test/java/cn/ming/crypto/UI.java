@@ -3,6 +3,7 @@ package cn.ming.crypto;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.math.BigInteger;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class UI extends JFrame
   
     public UI()  
     {  
-        super("国密算法小程序"); setSize(450,460);  
+        super("国密算法小程序"); setSize(450,700);  
   
         Container c = getContentPane();  
         tabbedPane=new JTabbedPane();   //创建选项卡面板对象  
@@ -362,7 +363,6 @@ public class UI extends JFrame
     			/* 也可以从文件导入密钥对 */
     			ECPoint pubKey = sm02.importPublicKey("publickey.pem");
     			BigInteger privKey = sm02.importPrivateKey("privatekey.pem");
-    			//System.out.println("公钥:\n" + pubKey);
     			//System.out.println("私钥:\n" + privKey.toString(16));
     			
 //----------------------------------获取用户输入的IDA与待签名的消息M------------------------------------------//
@@ -635,6 +635,7 @@ public class UI extends JFrame
 
         final JTextArea textarea1 = new JTextArea(10,35);
         final JTextArea textarea2 = new JTextArea(10,35);
+        textarea2.setLineWrap(true);
         JButton button1 = new JButton("加密");
         JButton button2 = new JButton("清空");
         JLabel label1 = new JLabel("加密结果：");
@@ -646,13 +647,17 @@ public class UI extends JFrame
         panel2.add(textarea2);
         
     	ActionListener E = new ActionListener() {
-    		public void actionPerformed(ActionEvent evt) {
+    		public void actionPerformed(ActionEvent evt){
 //--------------------------------------获取用户输入-----------------------------------------------//
     			String plaintext = textarea1.getText();
-    			
-    			String ciphertext = "加密结果";
-//--------------------------------------展示加密结果-----------------------------------------------//
-    			textarea2.setText(ciphertext);
+    			byte[] input;
+				try {
+					input = SM3.hash(plaintext.getBytes());
+					String ciphertext = SM3.byteArrayToHexString(input);
+					textarea2.setText(ciphertext);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}				
     	    }
     	};
     	button1.addActionListener(E);
@@ -666,7 +671,7 @@ public class UI extends JFrame
     	button2.addActionListener(clean);
     }
     
-    public void SM4Frame() {
+    private void SM4Frame(){
     	final JButton button1 = new JButton("ECB模式");
     	final JButton button2 = new JButton("CBC模式");
 		final JButton button3 = new JButton("加密ECB");
@@ -765,7 +770,7 @@ public class UI extends JFrame
     	//ECB模式加密
     	ActionListener ECB_C = new ActionListener() {
     		public void actionPerformed(ActionEvent evt) {
-    			label2.setVisible(true);
+    			label1.setVisible(true);
     	    	output.setVisible(true);
     			String plainText = textarea.getText();
     			SM4Utils sm4 = new SM4Utils();
@@ -782,7 +787,7 @@ public class UI extends JFrame
     	//CBC模式加密
     	ActionListener CBC_C = new ActionListener() {
     		public void actionPerformed(ActionEvent evt) {
-    			label2.setVisible(true);
+    			label1.setVisible(true);
     	    	output.setVisible(true);
     			String plainText = textarea.getText();
     			SM4Utils sm4 = new SM4Utils();

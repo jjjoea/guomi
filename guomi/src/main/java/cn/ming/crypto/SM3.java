@@ -96,7 +96,7 @@ public class SM3 {
         return bytes;
     }
 
-    public static byte[] hash(byte[] source) throws IOException {
+    public static byte[] hash(byte[] source) throws IOException{
         byte[] m1 = padding(source);
         int n = m1.length / (512 / 8);
         byte[] b;
